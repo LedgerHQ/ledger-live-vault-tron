@@ -7,15 +7,14 @@ type VaultData = {
   workspace: string;
 };
 
+let sessionId: string | null = null;
+
 export default class VaultTransport extends WebSocketTransport {
   protected data: VaultData | null;
-
-  protected sessionId: string | null;
 
   constructor(hook: any) {
     super(hook);
     this.data = null;
-    this.sessionId = null;
   }
 
   setData(data: VaultData): void {
@@ -88,14 +87,14 @@ export default class VaultTransport extends WebSocketTransport {
       const res: Buffer = await new Promise((resolve, reject) => {
         this.hook.rejectExchange = (e: any) => reject(e);
 
-        this.hook.resolveExchange = (b: Buffer, sessionId: string | null) => {
-          if (sessionId) {
-            this.sessionId = sessionId;
+        this.hook.resolveExchange = (b: Buffer, _sessionId?: string | null) => {
+          if (_sessionId) {
+            sessionId = _sessionId;
           }
           return resolve(b);
         };
         const data = {
-          sessionId: this.sessionId,
+          sessionId,
           workspace: this.data?.workspace,
           token: this.data?.token,
           apdu: hex
