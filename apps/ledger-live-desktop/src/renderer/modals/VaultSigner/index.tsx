@@ -7,14 +7,14 @@ import Label from "~/renderer/components/Label";
 import Alert from "~/renderer/components/Alert";
 import { vaultSignerSelector } from "~/renderer/reducers/settings";
 import { setVaultSigner } from "~/renderer/actions/settings";
-import Modal, { ModalBody, RenderProps } from "~/renderer/components/Modal";
+import Modal, { ModalBody } from "~/renderer/components/Modal";
 import Button from "~/renderer/components/Button";
 import Input from "~/renderer/components/Input";
 import InputPassword from "~/renderer/components/InputPassword";
 import ExternalLink from "~/renderer/components/ExternalLink";
 import { openURL } from "~/renderer/linking";
 
-const VaultSigner = ({ name }: { name: string }) => {
+const VaultSigner = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { host, token, workspace, ...rest } = useSelector(vaultSignerSelector);
@@ -22,9 +22,14 @@ const VaultSigner = ({ name }: { name: string }) => {
   const [localWorkspace, setLocalWorkspace] = useState<string>(workspace);
   const [localToken, setLocalToken] = useState<string>(token);
 
-  const onSubmit = (onClose: (a: void) => void) => {
+  const onSubmit = ({ onClose }: { onClose: () => void }) => {
     dispatch(
-      setVaultSigner({ ...rest, token: localToken, host: localHost, workspace: localWorkspace }),
+      setVaultSigner({
+        ...rest,
+        token: localToken,
+        host: localHost,
+        workspace: localWorkspace,
+      }),
     );
     onClose();
   };
@@ -33,9 +38,9 @@ const VaultSigner = ({ name }: { name: string }) => {
 
   return (
     <Modal
-      name={name}
+      name="MODAL_VAULT_SIGNER"
       centered
-      render={({ onClose }: RenderProps) => (
+      render={({ onClose }) => (
         <ModalBody
           onClose={onClose}
           onBack={undefined}
@@ -83,13 +88,11 @@ const VaultSigner = ({ name }: { name: string }) => {
                 </Label>
                 <InputPassword onChange={setLocalToken} value={localToken} />
               </Flex>
-              {onClose && (
-                <Flex alignSelf="flex-end">
-                  <Button primary onClick={() => onSubmit(onClose)} disabled={!isValid}>
-                    <Trans i18nKey="vaultSigner.modal.submit" />
-                  </Button>
-                </Flex>
-              )}
+              <Flex alignSelf="flex-end">
+                <Button primary onClick={() => onSubmit({ onClose })} disabled={!isValid}>
+                  <Trans i18nKey="vaultSigner.modal.submit" />
+                </Button>
+              </Flex>
             </Flex>
           )}
         />

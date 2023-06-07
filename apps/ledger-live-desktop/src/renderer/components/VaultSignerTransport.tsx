@@ -1,9 +1,7 @@
-// @flow
-
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { registerTransportModule } from "@ledgerhq/live-common/hw/index";
 import { retry } from "@ledgerhq/live-common/promise";
-import { VaultTransport } from "@ledgerhq/hw-transport-http";
+import VaultTransport from "@ledgerhq/hw-transport-vault";
 import { useSelector } from "react-redux";
 import { setDeviceMode, currentMode } from "@ledgerhq/live-common/hw/actions/app";
 import { vaultSignerSelector } from "~/renderer/reducers/settings";

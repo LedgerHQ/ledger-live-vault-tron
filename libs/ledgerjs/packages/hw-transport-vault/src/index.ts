@@ -1,6 +1,6 @@
 import { log } from "@ledgerhq/logs";
 import { TransportError } from "@ledgerhq/errors";
-import WebSocketTransport from "./WebSocketTransport";
+import WebSocketTransport from "@ledgerhq/hw-transport-http/lib-es/WebSocketTransport";
 
 type VaultData = {
   token: string;
@@ -30,14 +30,14 @@ export default class VaultTransport extends WebSocketTransport {
           rejectExchange: (_e: any) => {},
           onDisconnect: () => {},
           close: () => socket.close(),
-          send: msg => socket.send(msg)
+          send: (msg) => socket.send(msg),
         };
 
         socket.onopen = () => {
           socket.send("open");
         };
 
-        socket.onerror = e => {
+        socket.onerror = (e) => {
           exchangeMethods.onDisconnect();
           reject(e);
         };
@@ -47,7 +47,7 @@ export default class VaultTransport extends WebSocketTransport {
           reject(new TransportError("OpenFailed", "OpenFailed"));
         };
 
-        socket.onmessage = e => {
+        socket.onmessage = (e) => {
           if (typeof e.data !== "string") return;
           const data = JSON.parse(e.data);
 
@@ -97,7 +97,7 @@ export default class VaultTransport extends WebSocketTransport {
           sessionId,
           workspace: this.data?.workspace,
           token: this.data?.token,
-          apdu: hex
+          apdu: hex,
         };
         this.hook.send(JSON.stringify(data));
       });
