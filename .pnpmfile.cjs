@@ -258,6 +258,15 @@ function readPackage(pkg, context) {
       addPeerDependencies("asyncstorage-down", {
         "@react-native-async-storage/async-storage": "*",
       }),
+      // tron shit mes couille
+        addDependencies("tronweb", {
+            "@ethersproject/bytes": "*",
+            "@ethersproject/bignumber": "*",
+            "@ethersproject/keccak256": "*",
+            "@ethersproject/properties": "*",
+            "@ethersproject/strings": "*",
+            "@ethersproject/logger": "*",
+        }),
     ],
     pkg,
     context

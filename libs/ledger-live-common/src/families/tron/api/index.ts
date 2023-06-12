@@ -8,6 +8,7 @@ import drop from "lodash/drop";
 import get from "lodash/get";
 import sumBy from "lodash/sumBy";
 import take from "lodash/take";
+import TronWeb from "tronweb";
 import { getEnv } from "../../../env";
 import { TronTransactionExpired } from "../../../errors";
 import { promiseAllBatched } from "../../../promise";
@@ -140,7 +141,24 @@ export const createTronTransaction = async (
       ? `${getBaseApiUrl()}/wallet/transferasset`
       : `${getBaseApiUrl()}/wallet/createtransaction`;
     const preparedTransaction = await post(url, txData);
-    return preparedTransaction;
+    // return preparedTransaction;
+    // test tron shit
+    const HttpProvider = TronWeb.providers.HttpProvider;
+    const fullNode = new HttpProvider("https://api.trongrid.io");
+    const solidityNode = new HttpProvider("https://api.trongrid.io");
+    const eventServer = new HttpProvider("https://api.trongrid.io");
+    const tronWeb = new TronWeb(fullNode, solidityNode, eventServer);
+    tronWeb.setHeader({
+      "TRON-PRO-API-KEY": "ec320f10-8bd8-4ac9-a6cf-eef9bd346e25",
+    });
+    const extendExpirationObj = await tronWeb.transactionBuilder.extendExpiration(
+      preparedTransaction,
+      600,
+    );
+    console.log(extendExpirationObj);
+    return extendExpirationObj;
+    // preparedTransaction["raw_data"]["expiration"] = preparedTransaction["raw_data"]["expiration"] + 3600000000;
+    // return preparedTransaction;
   }
 };
 
