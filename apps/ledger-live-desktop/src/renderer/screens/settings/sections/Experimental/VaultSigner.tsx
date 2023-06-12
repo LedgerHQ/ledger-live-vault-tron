@@ -11,9 +11,10 @@ import Switch from "~/renderer/components/Switch";
 const VaultSigner = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
-  const onOpenModal = useCallback(() => dispatch(openModal("MODAL_VAULT_SIGNER", undefined)), [
-    dispatch,
-  ]);
+  const onOpenModal = useCallback(
+    () => dispatch(openModal("MODAL_VAULT_SIGNER", undefined)),
+    [dispatch],
+  );
   const { enabled, ...rest } = useSelector(vaultSignerSelector);
 
   const handleChange = (val: boolean) => {

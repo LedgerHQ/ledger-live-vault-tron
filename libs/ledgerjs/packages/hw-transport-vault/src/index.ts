@@ -30,14 +30,14 @@ export default class VaultTransport extends WebSocketTransport {
           rejectExchange: (_e: any) => {},
           onDisconnect: () => {},
           close: () => socket.close(),
-          send: (msg) => socket.send(msg),
+          send: msg => socket.send(msg),
         };
 
         socket.onopen = () => {
           socket.send("open");
         };
 
-        socket.onerror = (e) => {
+        socket.onerror = e => {
           exchangeMethods.onDisconnect();
           reject(e);
         };
@@ -47,7 +47,7 @@ export default class VaultTransport extends WebSocketTransport {
           reject(new TransportError("OpenFailed", "OpenFailed"));
         };
 
-        socket.onmessage = (e) => {
+        socket.onmessage = e => {
           if (typeof e.data !== "string") return;
           const data = JSON.parse(e.data);
 
@@ -57,15 +57,10 @@ export default class VaultTransport extends WebSocketTransport {
 
             case "error":
               reject(new Error(data.error));
-              return exchangeMethods.rejectExchange(
-                new TransportError(data.error, "WSError")
-              );
+              return exchangeMethods.rejectExchange(new TransportError(data.error, "WSError"));
 
             case "response":
-              return exchangeMethods.resolveExchange(
-                Buffer.from(data.data, "hex"),
-                data.sessionId
-              );
+              return exchangeMethods.resolveExchange(Buffer.from(data.data, "hex"), data.sessionId);
           }
         };
       } catch (e) {

@@ -74,7 +74,7 @@ export default class WebSocketTransport extends Transport {
           socket.send("open");
         };
 
-        socket.onerror = (e) => {
+        socket.onerror = e => {
           exchangeMethods.onDisconnect();
           reject(e);
         };
@@ -84,7 +84,7 @@ export default class WebSocketTransport extends Transport {
           reject(new TransportError("OpenFailed", "OpenFailed"));
         };
 
-        socket.onmessage = (e) => {
+        socket.onmessage = e => {
           if (typeof e.data !== "string") return;
           const data = JSON.parse(e.data);
 
@@ -137,7 +137,7 @@ export default class WebSocketTransport extends Transport {
 
   async close() {
     this.hook.close();
-    return new Promise<void>((success) => {
+    return new Promise<void>(success => {
       setTimeout(() => {
         success(undefined);
       }, 200);
