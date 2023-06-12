@@ -56,7 +56,18 @@ export function getCurrentDevice(state: { devices: DevicesState; settings: Setti
   const isVaultSigner = state.settings.vaultSigner.enabled;
 
   if (isVaultSigner) {
-    return { deviceId: "vault-transport", wired: true, modelId: DeviceModelId.nanoS };
+    const transportParams = new URLSearchParams();
+    transportParams.append("host", state.settings.vaultSigner.host);
+    transportParams.append("token", state.settings.vaultSigner.token);
+    transportParams.append("workspace", state.settings.vaultSigner.workspace);
+
+    const deviceId = `vault-transport:${transportParams.toString()}`;
+
+    return {
+      deviceId,
+      wired: true,
+      modelId: DeviceModelId.nanoS,
+    };
   }
 
   if (getEnv("DEVICE_PROXY_URL") || getEnv("MOCK")) {

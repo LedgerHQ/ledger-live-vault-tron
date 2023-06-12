@@ -39,12 +39,7 @@ export type TransportModule = {
 };
 const modules: TransportModule[] = [];
 export const registerTransportModule = (module: TransportModule): void => {
-  const index = modules.findIndex((m) => m.id === module.id);
-  if (index > -1) {
-    modules[index] = module;
-  } else {
-    modules.push(module);
-  }
+  modules.push(module);
 };
 export const discoverDevices = (
   accept: (module: TransportModule) => boolean = () => true,
